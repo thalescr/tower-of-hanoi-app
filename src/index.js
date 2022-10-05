@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import {View} from 'react-native';
 import Game from './components/Game';
 
 export default function MainWindow() {
@@ -8,9 +8,8 @@ export default function MainWindow() {
       style={{
         height: '100%',
         width: '100%',
-        backgroundColor: '#4DA9DB',
-      }}
-    >
+        backgroundColor: '#e5bc7f',
+      }}>
       <Game />
     </View>
   );

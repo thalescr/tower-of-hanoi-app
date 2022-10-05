@@ -1,46 +1,59 @@
 import React from 'react';
-import { View } from 'react-native';
+import {View} from 'react-native';
 import Disk from './Disk';
 
-export default function Pad({ disks, diskAction }) {
+export default function Pad({disks, diskAction}) {
   return (
     <View
-      onTouchStart={() => diskAction()}
       style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'flex-end',
-        height: 180,
-        width: '28%',
-      }}
-    > 
-      {disks.filter((disk) => disk.raised).map(({ number: diskNumber }) => (
-        <Disk key={diskNumber} number={diskNumber} />
-      ))}
+        width: '100%',
+      }}>
       <View
         style={{
-          backgroundColor: '#550000',
-          height: '100%',
-          width: 10,
-          marginLeft: '7%',
-          height: 150 - (disks.length * 22),
-          bottom: 0,
-        }}
-      />
-      {disks.filter((disk) => !disk.raised).map(({ number: diskNumber, raised }) => 
-        <Disk
-          key={diskNumber}
-          number={diskNumber}
+          height: 30,
+        }}>
+        {disks
+          .filter(disk => disk.raised)
+          .map(({number: diskNumber}) => (
+            <Disk key={diskNumber} number={diskNumber} />
+          ))}
+      </View>
+      <View
+        onTouchStart={() => diskAction()}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: 240,
+          width: '28%',
+        }}>
+        <View
+          style={{
+            backgroundColor: '#550000',
+            height: '100%',
+            width: 6,
+            marginLeft: '7%',
+            height: 168 - disks.filter(disk => !disk.raised).length * 22,
+            bottom: 0,
+          }}
         />
-      )}
-      <View
-        style={{
-          backgroundColor: '#550000',
-          height: 10,
-          width: '100%',
-          marginLeft: '7%',
-        }}
-      />
+        {disks
+          .filter(disk => !disk.raised)
+          .map(({number: diskNumber, raised}) => (
+            <Disk key={diskNumber} number={diskNumber} />
+          ))}
+        <View
+          style={{
+            backgroundColor: '#550000',
+            height: 10,
+            width: '100%',
+            marginLeft: '7%',
+          }}
+        />
+      </View>
     </View>
   );
 }

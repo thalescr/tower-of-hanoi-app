@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import { View, Button, Text } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {View, Button, Text} from 'react-native';
 import Pad from './Pad';
 
-const NUMBER_OF_DISKS = 4;
+const NUMBER_OF_DISKS = 7;
 
-const startingDisks = [...Array(NUMBER_OF_DISKS).keys()].map((number) => ({
+const startingDisks = [...Array(NUMBER_OF_DISKS).keys()].map(number => ({
   number: ++number,
   raised: false,
-}))
+}));
 
 export default function Game() {
   const [raisedPad, setRaisedPad] = useState(null);
@@ -16,9 +16,9 @@ export default function Game() {
   const [disks1, setDisks1] = useState([]);
   const [disks2, setDisks2] = useState([]);
   const disks = [
-    { get: disks0, set: setDisks0 },
-    { get: disks1, set: setDisks1 },
-    { get: disks2, set: setDisks2 },
+    {get: disks0, set: setDisks0},
+    {get: disks1, set: setDisks1},
+    {get: disks2, set: setDisks2},
   ];
 
   const resetGame = () => {
@@ -27,12 +27,12 @@ export default function Game() {
     setDisks0(startingDisks);
     setDisks1([]);
     setDisks2([]);
-  }
+  };
 
-  const raiseDisk = (currentIndex) => {
+  const raiseDisk = currentIndex => {
     const currentDisks = disks[currentIndex].get;
     if (currentDisks[0] && !currentDisks[0].raised) {
-      const { number } = currentDisks.shift();
+      const {number} = currentDisks.shift();
       currentDisks.unshift({
         number: number,
         raised: true,
@@ -42,10 +42,10 @@ export default function Game() {
     }
   };
 
-  const unraiseDisk = (currentIndex) => {
+  const unraiseDisk = currentIndex => {
     const currentDisks = disks[currentIndex].get;
     if (currentDisks[0] && currentDisks[0].raised) {
-      const { number } = currentDisks.shift();
+      const {number} = currentDisks.shift();
       currentDisks.unshift({
         number: number,
         raised: false,
@@ -55,7 +55,7 @@ export default function Game() {
     }
   };
 
-  const shiftDisk = (currentIndex) => {
+  const shiftDisk = currentIndex => {
     const toDisks = Array.from(disks[currentIndex].get);
     const fromDisks = Array.from(disks[raisedPad].get);
     const popped = fromDisks.shift();
@@ -72,7 +72,7 @@ export default function Game() {
     }
   };
 
-  const diskAction = (currentIndex) => {
+  const diskAction = currentIndex => {
     if (raisedPad === null) {
       raiseDisk(currentIndex);
     } else {
@@ -84,23 +84,40 @@ export default function Game() {
   };
 
   useEffect(() => {
-    if (disks1.length === NUMBER_OF_DISKS || disks2.length === NUMBER_OF_DISKS) {
+    if (
+      disks1.length === NUMBER_OF_DISKS ||
+      disks2.length === NUMBER_OF_DISKS
+    ) {
       console.log('Won!', movements);
     }
   }, [disks1, disks2]);
 
   return (
-    <View style={{
-      display: 'flex',
-      alignItems: 'flex-start',
-      justifyContent: 'space-around',
-      flexDirection: 'row',
-      height: '100%'
-    }}>
-      <Pad disks={disks0} diskAction={() => diskAction(0)} />
-      <Pad disks={disks1} diskAction={() => diskAction(1)} />
-      <Pad disks={disks2} diskAction={() => diskAction(2)} />
-      <Button title="Reiniciar" onPress={() => resetGame()} />
+    <View
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        paddingHorizontal: '2%',
+        width: '100%',
+        height: '100%',
+      }}>
+      <Text>{movements}</Text>
+      <View
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-around',
+          flexDirection: 'row',
+          marginRight: 12,
+          width: '100%',
+          height: 1200,
+        }}>
+        <Pad disks={disks0} diskAction={() => diskAction(0)} />
+        <Pad disks={disks1} diskAction={() => diskAction(1)} />
+        <Pad disks={disks2} diskAction={() => diskAction(2)} />
+      </View>
     </View>
   );
 }

@@ -1,18 +1,17 @@
 import React, {useState, useEffect} from 'react';
 import {View, Button, Text} from 'react-native';
 import Pad from './Pad';
+import UserInfo from './UserInfo';
+import WinAlert from './WinAlert';
 
-const NUMBER_OF_DISKS = 7;
-
-const startingDisks = [...Array(NUMBER_OF_DISKS).keys()].map(number => ({
-  number: ++number,
-  raised: false,
-}));
+let NUMBER_OF_DISKS;
 
 export default function Game() {
+  const [level, setLevel] = useState(1);
   const [raisedPad, setRaisedPad] = useState(null);
   const [movements, setMovements] = useState(0);
-  const [disks0, setDisks0] = useState(startingDisks);
+  const [winAlertVisible, setWinAlertVisible] = useState(false);
+  const [disks0, setDisks0] = useState([]);
   const [disks1, setDisks1] = useState([]);
   const [disks2, setDisks2] = useState([]);
   const disks = [
@@ -22,12 +21,21 @@ export default function Game() {
   ];
 
   const resetGame = () => {
+    const startingDisks = [...Array(NUMBER_OF_DISKS).keys()].map(number => ({
+      number: ++number,
+      raised: false,
+    }));
     setRaisedPad(null);
     setMovements(0);
     setDisks0(startingDisks);
     setDisks1([]);
     setDisks2([]);
   };
+
+  useEffect(() => {
+    NUMBER_OF_DISKS = level + 2;
+    resetGame();
+  }, [level]);
 
   const raiseDisk = currentIndex => {
     const currentDisks = disks[currentIndex].get;
@@ -83,12 +91,17 @@ export default function Game() {
     }
   };
 
+  const onContinue = () => {
+    setLevel(level + 1);
+    setWinAlertVisible(false);
+  };
+
   useEffect(() => {
     if (
       disks1.length === NUMBER_OF_DISKS ||
       disks2.length === NUMBER_OF_DISKS
     ) {
-      console.log('Won!', movements);
+      setWinAlertVisible(true);
     }
   }, [disks1, disks2]);
 
@@ -118,6 +131,13 @@ export default function Game() {
         <Pad disks={disks1} diskAction={() => diskAction(1)} />
         <Pad disks={disks2} diskAction={() => diskAction(2)} />
       </View>
+      <UserInfo startVisible={true} />
+      <WinAlert
+        level={level}
+        movements={movements}
+        onContinue={onContinue}
+        visible={winAlertVisible}
+      />
     </View>
   );
 }

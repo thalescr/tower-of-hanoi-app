@@ -1,16 +1,23 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import uuid from 'react-native-uuid';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Modal, Text, Button, View, StyleSheet, TextInput} from 'react-native';
-import ModalSelector from 'react-native-modal-selector';
+import {Picker} from '@react-native-picker/picker';
 
 export default function UserInfo() {
-  const hasFilled = AsyncStorage.getItem('id');
   const [name, setName] = useState();
   const [age, setAge] = useState();
   const [gender, setGender] = useState();
   const [grade, setGrade] = useState();
-  const [visible, setVisible] = useState(!hasFilled);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    AsyncStorage.getItem('id').then(id => {
+      if (id === null) {
+        setVisible(true);
+      }
+    });
+  }, []);
 
   const saveUserInfo = () => {
     if (name && age && gender && grade) {
@@ -40,36 +47,50 @@ export default function UserInfo() {
           value={age}
           onChangeText={value => setAge(value)}
         />
-        <ModalSelector
-          initValue="Sexo"
-          initValueTextStyle={selectInitValueStyle}
-          selectStyle={selectStyle}
-          onChange={({key}) => setGender(key)}
-          data={[
-            {key: 'masculino', label: 'Masculino'},
-            {key: 'feminino', label: 'Feminino'},
-          ]}
-        />
-        <ModalSelector
-          initValue="Série"
-          initValueTextStyle={selectInitValueStyle}
-          selectStyle={selectStyle}
-          onChange={({key}) => setGrade(key)}
-          data={[
-            {key: '6o_fund', label: '6º ano E. Fundamental'},
-            {key: '7o_fund', label: '7º ano E. Fundamental'},
-            {key: '8o_fund', label: '8º ano E. Fundamental'},
-            {key: '9o_fund', label: '9º ano E. Fundamental'},
-            {key: '1o_medio', label: '1º ano E. Médio'},
-            {key: '2o_medio', label: '2º ano E. Médio'},
-            {key: '3o_medio', label: '3º ano E. Médio'},
-          ]}
-        />
-        <Button
-          disabled={!name || !age || !gender || !grade}
-          title="Jogar"
-          onPress={() => saveUserInfo()}
-        />
+        <View style={selectStyle}>
+          <Picker
+            style={{
+              width: 240,
+              height: 46,
+              marginTop: -10,
+              color: !gender ? '#888' : '#000',
+            }}
+            mode="dropdown"
+            selectedValue={gender}
+            onValueChange={value => setGender(value)}>
+            <Picker.Item label="Sexo" enabled={false} />
+            <Picker.Item label="Feminino" value="feminino" />
+            <Picker.Item label="Masculino" value="masculino" />
+          </Picker>
+        </View>
+        <View style={selectStyle}>
+          <Picker
+            style={{
+              width: 240,
+              height: 46,
+              marginTop: -10,
+              color: !grade ? '#888' : '#000',
+            }}
+            mode="dropdown"
+            selectedValue={grade}
+            onValueChange={value => setGrade(value)}>
+            <Picker.Item label="Série" enabled={false} />
+            <Picker.Item value="6ofund" label="6º ano E. Fundamental" />
+            <Picker.Item value="7o_fund" label="7º ano E. Fundamental" />
+            <Picker.Item value="8o_fund" label="8º ano E. Fundamental" />
+            <Picker.Item value="9o_fund" label="9º ano E. Fundamental" />
+            <Picker.Item value="1o_medio" label="1º ano E. Médio" />
+            <Picker.Item value="2o_medio" label="2º ano E. Médio" />
+            <Picker.Item value="3o_medio" label="3º ano E. Médio" />
+          </Picker>
+        </View>
+        <View style={{marginTop: 10}}>
+          <Button
+            disabled={!name || !age || !gender || !grade}
+            title="Jogar"
+            onPress={() => saveUserInfo()}
+          />
+        </View>
       </View>
     </Modal>
   );
@@ -78,17 +99,17 @@ export default function UserInfo() {
 const modalStyle = StyleSheet.create({
   alignItems: 'center',
   backgroundColor: '#eee',
-  height: '80%',
+  height: '90%',
   width: '80%',
   borderRadius: 10,
-  padding: 30,
-  marginTop: '5%',
+  padding: 12,
+  marginTop: '2%',
   marginHorizontal: '10%',
 });
 
 const titleStyle = StyleSheet.create({
   fontSize: 18,
-  paddingBottom: 8,
+  paddingBottom: 12,
 });
 
 const inputStyle = StyleSheet.create({
@@ -105,13 +126,6 @@ const selectStyle = StyleSheet.create({
   borderColor: '#333',
   borderWidth: 2,
   borderRadius: 5,
-  paddingHorizontal: 20,
-  paddingVertical: 8,
   marginBottom: 6,
   width: 240,
-});
-
-const selectInitValueStyle = StyleSheet.create({
-  color: '#888',
-  textAlign: 'left',
 });

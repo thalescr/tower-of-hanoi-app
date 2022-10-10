@@ -34,7 +34,7 @@ export default function Pad({disks, diskAction}) {
           style={{
             backgroundColor: '#550000',
             height: '100%',
-            width: 6,
+            width: 5,
             marginLeft: '7%',
             height: 168 - disks.filter(disk => !disk.raised).length * 22,
             bottom: 0,
@@ -51,6 +51,7 @@ export default function Pad({disks, diskAction}) {
             height: 10,
             width: '100%',
             marginLeft: '7%',
+            borderRadius: 3,
           }}
         />
       </View>

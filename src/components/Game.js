@@ -10,6 +10,7 @@ export default function Game() {
   const [level, setLevel] = useState(1);
   const [raisedPad, setRaisedPad] = useState(null);
   const [movements, setMovements] = useState(0);
+  const [startedTime, setStartedTime] = useState(new Date());
   const [winAlertVisible, setWinAlertVisible] = useState(false);
   const [disks0, setDisks0] = useState([]);
   const [disks1, setDisks1] = useState([]);
@@ -21,6 +22,7 @@ export default function Game() {
   ];
 
   const resetGame = () => {
+    setStartedTime(new Date());
     const startingDisks = [...Array(NUMBER_OF_DISKS).keys()].map(number => ({
       number: ++number,
       raised: false,
@@ -92,7 +94,7 @@ export default function Game() {
   };
 
   const onContinue = () => {
-    setLevel(level + 1);
+    setLevel(level < 5 ? level + 1 : 1);
     setWinAlertVisible(false);
   };
 
@@ -116,7 +118,21 @@ export default function Game() {
         width: '100%',
         height: '100%',
       }}>
-      <Text>{movements}</Text>
+      <View
+        style={{
+          paddingTop: 22,
+        }}>
+        <Text
+          style={{
+            fontSize: 22,
+            textAlign: 'center',
+            fontWeight: '800',
+            color: '#000000',
+          }}>
+          Nível {level} {'\n'}
+          Movimentos: {movements}
+        </Text>
+      </View>
       <View
         style={{
           display: 'flex',
@@ -131,10 +147,11 @@ export default function Game() {
         <Pad disks={disks1} diskAction={() => diskAction(1)} />
         <Pad disks={disks2} diskAction={() => diskAction(2)} />
       </View>
-      <UserInfo startVisible={true} />
+      <UserInfo />
       <WinAlert
         level={level}
         movements={movements}
+        startedTime={startedTime}
         onContinue={onContinue}
         visible={winAlertVisible}
       />

@@ -1,4 +1,4 @@
-import {View, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 
 const colorMap = {
   1: '#D80010', // #24698F
@@ -19,5 +19,9 @@ export default function Disk({number}) {
     backgroundColor: colorMap[number],
   });
 
-  return <View style={styles} />;
+  return (
+    <View style={styles}>
+      <Text style={{textAlign: 'center'}}>{number}</Text>
+    </View>
+  );
 }

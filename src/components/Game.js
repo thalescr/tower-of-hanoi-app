@@ -1,10 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import {View, Button, Text} from 'react-native';
+import {View, Text, ImageBackground} from 'react-native';
+import Instructions from './Instructions';
 import Pad from './Pad';
 import UserInfo from './UserInfo';
 import WinAlert from './WinAlert';
 
 let NUMBER_OF_DISKS;
+
+const backgrounds = [
+  require('../assets/backgrounds/level1.png'),
+  require('../assets/backgrounds/level2.png'),
+  require('../assets/backgrounds/level3.png'),
+  require('../assets/backgrounds/level4.png'),
+  require('../assets/backgrounds/level5.png'),
+];
 
 export default function Game() {
   const [level, setLevel] = useState(1);
@@ -12,6 +21,7 @@ export default function Game() {
   const [movements, setMovements] = useState(0);
   const [startedTime, setStartedTime] = useState(new Date());
   const [winAlertVisible, setWinAlertVisible] = useState(false);
+  const [instructionsVisible, setInstructionsVisible] = useState(true);
   const [disks0, setDisks0] = useState([]);
   const [disks1, setDisks1] = useState([]);
   const [disks2, setDisks2] = useState([]);
@@ -108,53 +118,59 @@ export default function Game() {
   }, [disks1, disks2]);
 
   return (
-    <View
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-        paddingHorizontal: '2%',
-        width: '100%',
-        height: '100%',
-      }}>
-      <View
-        style={{
-          paddingTop: 22,
-        }}>
-        <Text
-          style={{
-            fontSize: 22,
-            textAlign: 'center',
-            fontWeight: '800',
-            color: '#000000',
-          }}>
-          Nível {level} {'\n'}
-          Movimentos: {movements}
-        </Text>
-      </View>
+    <ImageBackground source={backgrounds[level - 1]}>
       <View
         style={{
           display: 'flex',
-          alignItems: 'flex-start',
-          justifyContent: 'space-around',
-          flexDirection: 'row',
-          marginRight: 12,
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexDirection: 'column',
+          paddingHorizontal: '2%',
           width: '100%',
-          height: 1200,
+          height: '100%',
         }}>
-        <Pad disks={disks0} diskAction={() => diskAction(0)} />
-        <Pad disks={disks1} diskAction={() => diskAction(1)} />
-        <Pad disks={disks2} diskAction={() => diskAction(2)} />
+        <View
+          style={{
+            paddingTop: 22,
+          }}>
+          <Text
+            style={{
+              fontSize: 22,
+              textAlign: 'center',
+              fontWeight: '800',
+              color: '#000000',
+            }}>
+            Nível {level} {'\n'}
+            Movimentos: {movements}
+          </Text>
+        </View>
+        <View
+          style={{
+            display: 'flex',
+            alignItems: 'flex-start',
+            justifyContent: 'space-around',
+            flexDirection: 'row',
+            marginRight: 12,
+            width: '100%',
+            height: 1200,
+          }}>
+          <Pad disks={disks0} diskAction={() => diskAction(0)} />
+          <Pad disks={disks1} diskAction={() => diskAction(1)} />
+          <Pad disks={disks2} diskAction={() => diskAction(2)} />
+        </View>
+        <UserInfo />
+        <Instructions
+          visible={instructionsVisible}
+          setVisible={setInstructionsVisible}
+        />
+        <WinAlert
+          level={level}
+          movements={movements}
+          startedTime={startedTime}
+          onContinue={onContinue}
+          visible={winAlertVisible}
+        />
       </View>
-      <UserInfo />
-      <WinAlert
-        level={level}
-        movements={movements}
-        startedTime={startedTime}
-        onContinue={onContinue}
-        visible={winAlertVisible}
-      />
-    </View>
+    </ImageBackground>
   );
 }

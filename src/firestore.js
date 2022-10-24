@@ -4,8 +4,13 @@ const collections = {
   plays: firestore().collection('plays'),
 };
 
-export const list = async name => {
-  return collections[name].get();
+export const queryRank = async level => {
+  return collections['plays']
+    .where('level', '==', level)
+    .where('movements', '==', 2 ** (level + 2) - 1)
+    .orderBy('time')
+    .limit(5)
+    .get();
 };
 
 export const create = async (name, data) => {

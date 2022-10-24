@@ -166,7 +166,7 @@ export default function Game() {
         <WinAlert
           level={level}
           movements={movements}
-          startedTime={startedTime}
+          elapsedTime={(new Date() - startedTime) / 1000}
           onContinue={onContinue}
           visible={winAlertVisible}
         />

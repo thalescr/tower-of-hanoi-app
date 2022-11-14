@@ -38,6 +38,14 @@ export default function Pad({disks, diskAction}) {
             marginLeft: '7%',
             height: 168 - disks.filter(disk => !disk.raised).length * 22,
             bottom: 0,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
           }}
         />
         {disks
@@ -52,6 +60,14 @@ export default function Pad({disks, diskAction}) {
             width: '100%',
             marginLeft: '7%',
             borderRadius: 3,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+            elevation: 5,
           }}
         />
       </View>

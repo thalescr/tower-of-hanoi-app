@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, ImageBackground} from 'react-native';
+import GameOver from './GameOver';
 import Instructions from './Instructions';
 import Pad from './Pad';
 import UserInfo from './UserInfo';
@@ -19,8 +20,10 @@ export default function Game() {
   const [level, setLevel] = useState(1);
   const [raisedPad, setRaisedPad] = useState(null);
   const [movements, setMovements] = useState(0);
+  const [remainingMovements, setRemainingMovements] = useState(12);
   const [startedTime, setStartedTime] = useState(new Date());
   const [winAlertVisible, setWinAlertVisible] = useState(false);
+  const [gameOverVisible, setGameOverVisible] = useState(false);
   const [instructionsVisible, setInstructionsVisible] = useState(true);
   const [disks0, setDisks0] = useState([]);
   const [disks1, setDisks1] = useState([]);
@@ -32,13 +35,14 @@ export default function Game() {
   ];
 
   const resetGame = () => {
-    setStartedTime(new Date());
     const startingDisks = [...Array(NUMBER_OF_DISKS).keys()].map(number => ({
       number: ++number,
       raised: false,
     }));
     setRaisedPad(null);
     setMovements(0);
+    setRemainingMovements(2 ** NUMBER_OF_DISKS * 1.5);
+    setGameOverVisible(false);
     setDisks0(startingDisks);
     setDisks1([]);
     setDisks2([]);
@@ -60,6 +64,10 @@ export default function Game() {
       disks[currentIndex].set(Array.from(currentDisks));
       setRaisedPad(currentIndex);
     }
+
+    if (movements === 0) {
+      setStartedTime(new Date());
+    }
   };
 
   const unraiseDisk = currentIndex => {
@@ -76,6 +84,11 @@ export default function Game() {
   };
 
   const shiftDisk = currentIndex => {
+    if (remainingMovements <= 1) {
+      setGameOverVisible(true);
+      return;
+    }
+
     const toDisks = Array.from(disks[currentIndex].get);
     const fromDisks = Array.from(disks[raisedPad].get);
     const popped = fromDisks.shift();
@@ -89,6 +102,7 @@ export default function Game() {
       disks[currentIndex].set(toDisks);
       setRaisedPad(null);
       setMovements(movements + 1);
+      setRemainingMovements(remainingMovements - 1);
     }
   };
 
@@ -141,7 +155,7 @@ export default function Game() {
               color: '#000000',
             }}>
             Nível {level} {'\n'}
-            Movimentos: {movements}
+            Movimentos restantes: {remainingMovements}
           </Text>
         </View>
         <View
@@ -170,6 +184,7 @@ export default function Game() {
           onContinue={onContinue}
           visible={winAlertVisible}
         />
+        <GameOver visible={gameOverVisible} onContinue={resetGame} />
       </View>
     </ImageBackground>
   );

@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {View, Modal, Text, Button, StyleSheet} from 'react-native';
-import {Table, Row, Rows} from 'react-native-table-component';
+import {View, Text, StyleSheet} from 'react-native';
+import {Table, Row} from 'react-native-table-component';
 import Sound from 'react-native-sound';
 import {queryRank, create} from '../firestore';
+import MyModal from './MyModal';
+import MyButton from './MyButton';
 
 const sound = new Sound('claps.mp3', Sound.MAIN_BUNDLE, err => {
   if (err) {
@@ -27,7 +29,7 @@ export default function WinAlert({
         const data = value.data();
         return [
           `${index + 1}`,
-          data.name,
+          data.name.slice(0, 12),
           data.movements,
           `${parseFloat(data.time).toFixed(1)} s`,
         ];
@@ -64,49 +66,48 @@ export default function WinAlert({
   }, [visible]);
 
   return (
-    <Modal visible={visible} transparent>
-      <View style={modalStyle}>
-        <Text style={titleStyle}>Parabéns!</Text>
-        <Text style={{paddingBottom: 4}}>
-          Você concluiu o nível {level} em {movements} movimentos em{' '}
-          {elapsedTime.toFixed(1)} segundos.
-        </Text>
+    <MyModal visible={visible} modalStyle={modalStyle}>
+      <Text style={titleStyle}>Parabéns!</Text>
+      <Text style={{paddingBottom: 4}}>
+        Você concluiu o nível {level} em {movements} movimentos em{' '}
+        {elapsedTime.toFixed(1)} segundos.
+      </Text>
+      <View style={{width: '100%', height: 180}}>
         <View style={rankTable}>
-          <Table borderStyle={{borderWidth: 2, borderColor: '#888'}}>
+          <Table
+            style={{marginHorizontal: 5}}
+            borderStyle={{borderWidth: 2, borderColor: '#444'}}>
             <Row
               data={['#', 'Nome', 'Movimentos', 'Tempo']}
-              style={{height: 30, backgroundColor: '#ccc'}}
+              style={{height: 30, backgroundColor: '#96866f'}}
               textStyle={{margin: 6}}
             />
             {rank.map((play, index) => (
               <Row
                 key={index}
                 data={play}
-                style={{height: 30}}
                 textStyle={{margin: 6}}
+                style={{height: 30, backgroundColor: '#e4d5c0'}}
               />
             ))}
           </Table>
         </View>
-        <Button
+      </View>
+      <View style={{marginVertical: 8}}>
+        <MyButton
           onPress={onContinue}
           title={level !== 5 ? 'Continuar' : 'Jogar novamente'}
         />
       </View>
-    </Modal>
+    </MyModal>
   );
 }
 
 const modalStyle = StyleSheet.create({
-  alignItems: 'center',
-  justifyContent: 'space-around',
-  backgroundColor: '#eee',
   height: '80%',
-  width: '60%',
-  borderRadius: 10,
-  padding: 10,
+  width: '70%',
   marginTop: '5%',
-  marginHorizontal: '20%',
+  marginHorizontal: '15%',
 });
 
 const titleStyle = StyleSheet.create({
@@ -117,6 +118,5 @@ const titleStyle = StyleSheet.create({
 
 const rankTable = StyleSheet.create({
   flex: 1,
-  backgroundColor: '#eee',
   width: '100%',
 });
